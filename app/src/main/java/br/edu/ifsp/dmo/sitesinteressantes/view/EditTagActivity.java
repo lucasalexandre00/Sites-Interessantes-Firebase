@@ -106,9 +106,17 @@ public class EditTagActivity extends AppCompatActivity implements ItemClick {
                 .setNegativeButton("Apagar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //viewModel.delete(tagSites.get(position));
-                        //tagSites = viewModel.recuperateAll();
-                        configList();
+                        viewModel.delete(tagSites.get(position)).observe(
+                                EditTagActivity.this,
+                                observer ->{
+                                    if (observer.booleanValue()){
+                                        Toast.makeText(EditTagActivity.this, "Dados removidos com sucesso.", Toast.LENGTH_SHORT).show();
+                                        extracted();
+                                    }else {
+                                        Toast.makeText(EditTagActivity.this, "Erro ao remover os dados.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
                         dialogInterface.dismiss();
                     }
                 });

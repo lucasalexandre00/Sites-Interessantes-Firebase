@@ -113,14 +113,18 @@ public class TagSiteDao {
         return id;
     }
 
-    public void delete(TagSite tag){
-        String where = DatabaseContracts.TableTag.COLUMN_TAG + " = ? ";
-        String whereArgs[] = {tag.getTag()};
+    public MutableLiveData<Boolean> delete(TagSite tag){
+        MutableLiveData<Boolean> liveData = new MutableLiveData<>();
 
-        mDatabase = mHelper.getWritableDatabase();
-        mDatabase.delete(DatabaseContracts.TableTag.TABLE_NAME,
-                where,
-                whereArgs);
-        mDatabase.close();
+        db.collection("tags")
+                .document(tag.getTagId())
+                .delete()
+                .addOnSuccessListener(
+                        x ->  liveData.postValue(true)
+                ).addOnFailureListener(
+                        x ->  liveData.postValue(false)
+                );
+
+        return liveData;
     }
 }

@@ -24,4 +24,8 @@ public class TagViewModel extends ViewModel {
     public MutableLiveData<Boolean> update(TagSite oldtagSite, TagSite newTagSite) {
         return tagSiteDao.update(oldtagSite, newTagSite);
     }
+
+    public MutableLiveData<Boolean> delete(TagSite tagSite) {
+        return tagSiteDao.delete(tagSite);
+    }
 }
