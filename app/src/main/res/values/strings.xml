@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Sites Interessantes</string>
+    <string name="fab_add_description">Button to add a new site.</string>
+    <string name="add_new_tag">Add new tag.</string>
+</resources>
