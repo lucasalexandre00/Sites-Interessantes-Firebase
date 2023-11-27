@@ -1,13 +1,8 @@
 package br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.tag;
 
-import android.content.Context;
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
@@ -22,4 +17,11 @@ public class TagViewModel extends ViewModel {
         return liveData;
     }
 
+    public MutableLiveData<Boolean> create(TagSite tagSite) {
+        return tagSiteDao.create(tagSite);
+    }
+
+    public MutableLiveData<Boolean> update(TagSite oldtagSite, TagSite newTagSite) {
+        return tagSiteDao.update(oldtagSite, newTagSite);
+    }
 }

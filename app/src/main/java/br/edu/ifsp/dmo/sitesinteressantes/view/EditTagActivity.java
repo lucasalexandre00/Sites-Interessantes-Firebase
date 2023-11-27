@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewTreeLifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,12 +56,15 @@ public class EditTagActivity extends AppCompatActivity implements ItemClick {
         findById();
         setClicks();
 
+        extracted();
+    }
+
+    private void extracted() {
         viewModel.recuperateAll().observe(this,
                 Observer -> {
                     tagSites = Observer;
                     configList();
-                }
-                );
+                });
     }
 
     @Override
@@ -83,9 +88,18 @@ public class EditTagActivity extends AppCompatActivity implements ItemClick {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         TagSite tagSite = new TagSite(editText.getText().toString().trim());
-                        //viewModel.update(tagSites.get(position), tagSite);
-                        //tagSites = viewModel.recuperateAll();
-                        configList();
+                        viewModel.update(tagSites.get(position), tagSite).observe(
+                                EditTagActivity.this,
+                                observer ->{
+                                    if (observer.booleanValue()){
+                                        Toast.makeText(EditTagActivity.this, "Dados atualizados com sucesso.", Toast.LENGTH_SHORT).show();
+                                        extracted();
+                                    }else {
+                                        Toast.makeText(EditTagActivity.this, "Erro ao atualizar os dados.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
+
                         dialogInterface.dismiss();
                     }
                 })
@@ -124,9 +138,18 @@ public class EditTagActivity extends AppCompatActivity implements ItemClick {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         TagSite tagSite = new TagSite(editText.getText().toString().trim());
-                        //viewModel.create(tagSite);
-                        //tagSites = viewModel.recuperateAll();
-                        configList();
+                        viewModel.create(tagSite).observe(
+                                EditTagActivity.this,
+                                observer ->{
+                                    if (observer.booleanValue()){
+                                        Toast.makeText(EditTagActivity.this, "Dados salvos com sucesso.", Toast.LENGTH_SHORT).show();
+                                        extracted();
+                                    }else {
+                                        Toast.makeText(EditTagActivity.this, "Erro ao Salvar os dados.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
+
                         dialogInterface.dismiss();
                     }
                 })

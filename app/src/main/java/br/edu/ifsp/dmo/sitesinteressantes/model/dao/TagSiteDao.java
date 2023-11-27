@@ -19,7 +19,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
 
@@ -33,40 +36,35 @@ public class TagSiteDao {
 
     }
 
-    public void create(TagSite tag){
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContracts.TableTag.COLUMN_TAG, tag.getTag());
-
-        mDatabase = mHelper.getWritableDatabase();
-        mDatabase.insert(
-                DatabaseContracts.TableTag.TABLE_NAME,
-                null,
-                values
-        );
-
-        mDatabase.close();
+    public MutableLiveData<Boolean> create(TagSite tag){
+        final String id  =  UUID.randomUUID().toString();
+        MutableLiveData<Boolean> liveData = new MutableLiveData<>();
+        Map<String, Object> tagMap = new HashMap<>();
+        tagMap.put("tagId", id);
+        tagMap.put("tag", tag.getTag());
+       db.collection("tags")
+               .document(id)
+               .set(tagMap).addOnSuccessListener(
+                       x -> liveData.postValue(true)
+               ).addOnFailureListener(
+                       x -> liveData.postValue(false)
+               );
+       return liveData;
     }
 
-    public boolean update(TagSite tagOld, TagSite tagNew){
-        boolean answer;
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContracts.TableTag.COLUMN_TAG, tagNew.getTag());
+    public MutableLiveData<Boolean> update(TagSite oldTagSite, TagSite newTagSite){
+        MutableLiveData<Boolean> liveData = new MutableLiveData<>();
 
-        String where = DatabaseContracts.TableTag.COLUMN_TAG + " = ? ";
+        db.collection("tags")
+                .document(oldTagSite.getTagId())
+                .update("tag", newTagSite.getTag())
+                .addOnSuccessListener(
+                      x ->  liveData.postValue(true)
+                ).addOnFailureListener(
+                      x ->  liveData.postValue(false)
+                );
 
-        String whereArgs[] = {tagOld.getTag()};
-
-        try {
-            mDatabase = mHelper.getWritableDatabase();
-            mDatabase.update(DatabaseContracts.TableTag.TABLE_NAME,
-                    values,
-                    where,
-                    whereArgs);
-            answer = true;
-        }catch (Exception e){
-            answer = false;
-        }
-        return answer;
+        return liveData;
     }
 
     public MutableLiveData<List<TagSite>> recuperateAll(){
@@ -79,6 +77,7 @@ public class TagSiteDao {
                             List<TagSite> tags = new ArrayList<>();
                             for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()){
                                 TagSite tagSite = new TagSite(documentSnapshot.getString("tag"));
+                                tagSite.setTagId(documentSnapshot.getString("tagId"));
                                 tags.add(tagSite);
                             }
                             liveData.postValue(tags);

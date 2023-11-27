@@ -3,9 +3,11 @@ package br.edu.ifsp.dmo.sitesinteressantes.model;
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class TagSite {
 
+    private String tagId;
     private String tag;
 
     public TagSite(String tag) {
@@ -18,6 +20,14 @@ public class TagSite {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public String getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(String tagId) {
+        this.tagId = tagId;
     }
 
     @NonNull
