@@ -27,8 +27,6 @@ import java.util.UUID;
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
 
 public class TagSiteDao {
-    private SQliteHelper mHelper;
-    private SQLiteDatabase mDatabase;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -87,7 +85,7 @@ public class TagSiteDao {
         return liveData;
     }
 
-    public int recuperateTagId(TagSite tag){
+/*    public int recuperateTagId(TagSite tag){
         int id;
         String columns[] = {DatabaseContracts.TableTag._ID};
         String where = DatabaseContracts.TableTag.COLUMN_TAG + " = ? ";
@@ -111,7 +109,7 @@ public class TagSiteDao {
         cursor.close();
         mDatabase.close();
         return id;
-    }
+    }*/
 
     public MutableLiveData<Boolean> delete(TagSite tag){
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();

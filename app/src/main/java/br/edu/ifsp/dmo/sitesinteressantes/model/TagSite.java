@@ -13,6 +13,8 @@ public class TagSite {
     public TagSite(String tag) {
         this.tag = tag;
     }
+    public TagSite() {
+    }
 
     public String getTag() {
         return tag;

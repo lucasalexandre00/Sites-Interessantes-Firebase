@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,13 +23,15 @@ import br.edu.ifsp.dmo.sitesinteressantes.model.Site;
 import br.edu.ifsp.dmo.sitesinteressantes.model.dao.SiteDao;
 import br.edu.ifsp.dmo.sitesinteressantes.view.adapter.SiteAdapter;
 import br.edu.ifsp.dmo.sitesinteressantes.view.adapter.SiteClickListener;
+import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.site.SiteViewModel;
 
 public class MainActivity extends AppCompatActivity implements SiteClickListener {
 
     private FloatingActionButton button;
     private RecyclerView recyclerView;
     private List<Site> siteList;
-    private SiteDao dao;
+
+    private SiteViewModel siteViewModel;
 
     private ActivityResultLauncher<Intent> resultLauncher;
     @Override
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dao = new SiteDao(this);
+        siteViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
 
         button = findViewById(R.id.button_add_site);
         button.setOnClickListener(view -> {
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
                     configList();
                 }
         );
+        configList();
     }
 
     @Override
@@ -77,10 +81,14 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
     }
 
     private void configList(){
-        siteList = dao.recuperateAll();
-        SiteAdapter adapter = new SiteAdapter(siteList, this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        siteViewModel.recuperateAll().observe(this,
+            observer -> {
+                siteList = observer;
+                SiteAdapter adapter = new SiteAdapter(siteList, this);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            }
+        );
     }
 
     @Override
@@ -98,11 +106,10 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
 
     @Override
     public void clickDeleteSite(int position) {
-        siteList = dao.recuperateAll();
+        //siteList = siteViewModel.recuperateAll();
         Site site = siteList.get(position);
-        dao.delete(site);
+        //siteViewModel.delete(site);
         siteList.remove(position);
         configList();
-
     }
 }

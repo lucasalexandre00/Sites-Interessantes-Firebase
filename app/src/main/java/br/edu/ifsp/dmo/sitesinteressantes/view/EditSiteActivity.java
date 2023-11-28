@@ -34,7 +34,7 @@ public class EditSiteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_site);
 
 
-        siteDao = new SiteDao(this);
+        //siteDao = new SiteDao(this);
 
         tituloEditText = findViewById(R.id.edittext_title_update);
         urlEditText = findViewById(R.id.edittext_url_update);
@@ -52,10 +52,10 @@ public class EditSiteActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            Site site = siteDao.recuperateAll().get(intent.getIntExtra("posicao_lista", 0));
+            //Site site = siteDao.recuperateAll().get(intent.getIntExtra("posicao_lista", 0));
 
-            tituloEditText.setText(site.getTitle());
-            urlEditText.setText(site.getUrl());
+            //tituloEditText.setText(site.getTitle());
+            //urlEditText.setText(site.getUrl());
         }
 
     }
@@ -68,7 +68,7 @@ public class EditSiteActivity extends AppCompatActivity {
         Site siteDesatualizado;
         Site siteAtualizado;
         Intent intent = getIntent();
-        siteDesatualizado = siteDao.recuperateAll().get(intent.getIntExtra("posicao_lista", 0));
+        //siteDesatualizado = siteDao.recuperateAll().get(intent.getIntExtra("posicao_lista", 0));
 
         siteAtualizado = new Site(
                 tituloEditText.getText().toString(),
@@ -77,10 +77,10 @@ public class EditSiteActivity extends AppCompatActivity {
         );
 
 
-        if (siteDao.update(siteDesatualizado, siteAtualizado)){
+       /* if (siteDao.update(siteDesatualizado, siteAtualizado)){
             setResult(RESULT_OK, intent);
             finish();
-        }
+        }*/
         setResult(RESULT_CANCELED, intent);
         finish();
     }

@@ -34,7 +34,7 @@ public class SiteDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site_details);
 
-        siteDao = new SiteDao(this);
+        //siteDao = new SiteDao(this);
 
         tituloEditText = findViewById(R.id.edittext_title);
         urlEditText = findViewById(R.id.edittext_url);

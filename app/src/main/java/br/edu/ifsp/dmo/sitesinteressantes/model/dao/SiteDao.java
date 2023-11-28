@@ -5,67 +5,76 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.lifecycle.MutableLiveData;
+
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import br.edu.ifsp.dmo.sitesinteressantes.model.Site;
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
 
 public class SiteDao {
+
     private SQliteHelper mHelper;
 
     private SQLiteDatabase mDatabase;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private Context context;
+    public SiteDao(){}
 
-    public SiteDao(Context context){
-        this.context = context;
-        mHelper = new SQliteHelper(context);
+    public MutableLiveData<Boolean> create(Site site){final String id  =  UUID.randomUUID().toString();
+        MutableLiveData<Boolean> liveData = new MutableLiveData<>();
+        Map<String, Object> tagMap = new HashMap<>();
+        tagMap.put("id", id);
+        tagMap.put("title", site.getTitle());
+        tagMap.put("url", site.getUrl());
+        tagMap.put("tagId", site.getTag().getTagId());
+        db.collection("sites")
+                .document(id)
+                .set(tagMap).addOnSuccessListener(
+                        x -> liveData.postValue(true)
+                ).addOnFailureListener(
+                        x -> liveData.postValue(false)
+                );
+        return liveData;
     }
 
-    public void create(Site site){
-        TagSiteDao tagDao = new TagSiteDao(/*context*/);
+    public MutableLiveData<List<Site>> recuperateAll(){
+        MutableLiveData<List<Site>> liveData = new MutableLiveData<List<Site>>();
 
-        int tagId = tagDao.recuperateTagId(site.getTag());
-
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContracts.TableSite.COLUMN_TITLE, site.getTitle());
-        values.put(DatabaseContracts.TableSite.COLUMN_URL, site.getUrl());
-        values.put(DatabaseContracts.TableSite.COLUMN_TAG_ID, tagId );
-
-        mDatabase = mHelper.getWritableDatabase();
-        mDatabase.insert(DatabaseContracts.TableSite.TABLE_NAME,
-                null,
-                values);
-        mDatabase.close();
-    }
-
-    public List<Site> recuperateAll(){
-        String query  = "SELECT " +
-                "S." + DatabaseContracts.TableSite.COLUMN_TITLE + ", " +
-                "S." + DatabaseContracts.TableSite.COLUMN_URL + ", " +
-                "T." + DatabaseContracts.TableTag.COLUMN_TAG +
-                " FROM " + DatabaseContracts.TableSite.TABLE_NAME + " AS S" +
-                " INNER JOIN " + DatabaseContracts.TableTag.TABLE_NAME + " AS T" +
-                " ON S." + DatabaseContracts.TableSite.COLUMN_TAG_ID + " = T." + DatabaseContracts.TableTag._ID +
-                " ORDER BY S." + DatabaseContracts.TableSite.COLUMN_TITLE;
-
-        mDatabase = mHelper.getReadableDatabase();
-        Cursor cursor = mDatabase.rawQuery(query, null);
-        List<Site> list = new ArrayList<>();
-
-        while (cursor.moveToNext()){
-            list.add(
-                    new Site(cursor.getString(0),
-                            cursor.getString(1),
-                            new TagSite(cursor.getString(2)
-                            )
-                    )
-            );
-        }
-
-        cursor.close();
-        return list;
+        db.collection("sites")
+                .get()
+                .addOnSuccessListener(
+                        queryDocumentSnapshots -> {
+                            List<Site> sites = new ArrayList<>();
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()){
+                                db.collection("tags")
+                                        .document(documentSnapshot.getString("tagId"))
+                                        .get()
+                                        .addOnSuccessListener(
+                                                x -> {
+                                                    Site site = new Site();
+                                                    TagSite tagSite = new TagSite();
+                                                    site.setId(documentSnapshot.getString("id"));
+                                                    site.setTitle(documentSnapshot.getString("title"));
+                                                    site.setUrl(documentSnapshot.getString("url"));
+                                                    tagSite.setTagId(x.getString("tagId"));
+                                                    tagSite.setTag(x.getString("tag"));
+                                                    site.setTag(tagSite);
+                                                    sites.add(site);
+                                                    liveData.postValue(sites);
+                                                }
+                                        );
+                            }
+                        }
+                );
+        return liveData;
     }
 
     public void delete(Site site) {
@@ -85,11 +94,11 @@ public class SiteDao {
         boolean answer;
         TagSiteDao tagDao = new TagSiteDao(/*context*/);
 
-        int tagId = tagDao.recuperateTagId(siteAtualizado.getTag());
+        //int tagId = tagDao.recuperateTagId(siteAtualizado.getTag());
         ContentValues values = new ContentValues();
         values.put(DatabaseContracts.TableSite.COLUMN_TITLE, siteAtualizado.getTitle());
         values.put(DatabaseContracts.TableSite.COLUMN_URL, siteAtualizado.getUrl());
-        values.put(DatabaseContracts.TableSite.COLUMN_TAG_ID, tagId);
+        //values.put(DatabaseContracts.TableSite.COLUMN_TAG_ID, tagId);
 
         String where = DatabaseContracts.TableSite.COLUMN_TITLE + " = ? and " +
                 DatabaseContracts.TableSite.COLUMN_URL + " = ? ";

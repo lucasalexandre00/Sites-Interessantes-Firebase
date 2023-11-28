@@ -4,27 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewTreeLifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.List;
-
 import br.edu.ifsp.dmo.sitesinteressantes.R;
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
-import br.edu.ifsp.dmo.sitesinteressantes.model.dao.TagSiteDao;
 import br.edu.ifsp.dmo.sitesinteressantes.view.adapter.ItemClick;
 import br.edu.ifsp.dmo.sitesinteressantes.view.adapter.TagAdapter;
 import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.tag.TagViewModel;
@@ -33,12 +25,8 @@ public class EditTagActivity extends AppCompatActivity implements ItemClick {
 
     private RecyclerView recyclerView;
     private FloatingActionButton button;
-    private TagSiteDao dao;
     private List<TagSite> tagSites;
-
     private TagViewModel viewModel;
-
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,5 +162,4 @@ public class EditTagActivity extends AppCompatActivity implements ItemClick {
     private void setClicks(){
         button.setOnClickListener(view -> new_tag());
     }
-
 }
