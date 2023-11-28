@@ -83,14 +83,20 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
     }
 
     private void configList(){
-        siteViewModel.recuperateAll().observe(this,
-            observer -> {
-                siteList = observer;
-                SiteAdapter adapter = new SiteAdapter(siteList, this);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            }
-        );
+        if (siteList != null && siteList.size() == 0){
+            SiteAdapter adapter = new SiteAdapter(siteList, this);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        }else {
+            siteViewModel.recuperateAll().observe(this,
+                    observer -> {
+                        siteList = observer;
+                        SiteAdapter adapter = new SiteAdapter(siteList, this);
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    }
+            );
+        }
     }
 
     @Override
@@ -104,12 +110,16 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
 
     @Override
     public void clickDeleteSite(int position) {
-        siteViewModel.recuperateAll().observe(this,
-                observer -> {
-                   site = observer.get(position);
-                    siteViewModel.delete(site);
-                    siteList.remove(position);
-                    configList();
+        siteViewModel.delete(siteList.get(position)).observe(
+                this,
+                observe -> {
+                    if (observe.booleanValue()){
+                        siteList.remove(position);
+                        onResume();
+                        Toast.makeText(this, "Dados removidos com sucesso.", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(this, "Erro ao remover os dados.", Toast.LENGTH_SHORT).show();
+                    }
                 }
         );
     }
