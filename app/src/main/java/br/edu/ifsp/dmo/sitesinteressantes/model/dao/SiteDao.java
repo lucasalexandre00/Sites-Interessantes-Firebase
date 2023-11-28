@@ -91,32 +91,20 @@ public class SiteDao {
         mDatabase.close();
     }
 
-    public boolean update(Site siteDesatualizado, Site siteAtualizado) {
-        boolean answer;
-        TagSiteDao tagDao = new TagSiteDao(/*context*/);
+    public MutableLiveData<Boolean> update(Site siteAtualizado) {
+        MutableLiveData<Boolean> liveData = new MutableLiveData<>();
 
-        //int tagId = tagDao.recuperateTagId(siteAtualizado.getTag());
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContracts.TableSite.COLUMN_TITLE, siteAtualizado.getTitle());
-        values.put(DatabaseContracts.TableSite.COLUMN_URL, siteAtualizado.getUrl());
-        //values.put(DatabaseContracts.TableSite.COLUMN_TAG_ID, tagId);
+        db.collection("sites")
+                .document(siteAtualizado.getId())
+                .update("title", siteAtualizado.getTitle(),
+                        "url", siteAtualizado.getUrl(),
+                        "tagId", siteAtualizado.getTag().getTagId())
+                .addOnSuccessListener(
+                        x ->  liveData.postValue(true)
+                ).addOnFailureListener(
+                        x ->  liveData.postValue(false)
+                );
 
-        String where = DatabaseContracts.TableSite.COLUMN_TITLE + " = ? and " +
-                DatabaseContracts.TableSite.COLUMN_URL + " = ? ";
-
-        String whereArgs[] = {siteDesatualizado.getTitle(), siteDesatualizado.getUrl()};
-
-        try {
-            mDatabase = mHelper.getWritableDatabase();
-            mDatabase.update(DatabaseContracts.TableSite.TABLE_NAME,
-                    values,
-                    where,
-                    whereArgs);
-            answer = true;
-        }catch (Exception e){
-            e.printStackTrace();
-            answer = false;
-        }
-        return answer;
+        return liveData;
     }
 }

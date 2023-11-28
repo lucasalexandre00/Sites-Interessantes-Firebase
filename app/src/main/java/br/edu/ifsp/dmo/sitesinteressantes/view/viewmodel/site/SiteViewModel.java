@@ -20,4 +20,8 @@ public class SiteViewModel  extends ViewModel {
     public MutableLiveData<Boolean> create(Site site) {
         return siteDao.create(site);
     }
+
+    public MutableLiveData<Boolean> update(Site siteAtualizado) {
+        return siteDao.update(siteAtualizado);
+    }
 }
