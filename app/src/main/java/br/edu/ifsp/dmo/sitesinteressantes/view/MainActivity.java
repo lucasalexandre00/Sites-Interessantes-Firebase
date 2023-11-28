@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
     private SiteViewModel siteViewModel;
 
     private ActivityResultLauncher<Intent> resultLauncher;
+
+    private Site site;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,18 +100,17 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
         intent.putExtra("posicao_lista", position);
 
         resultLauncher.launch(intent);
-
-        //criar a activity para editar site
-        //chamar dao para atualizar site
-        Toast.makeText(this, "entrou no edit " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void clickDeleteSite(int position) {
-        //siteList = siteViewModel.recuperateAll();
-        Site site = siteList.get(position);
-        //siteViewModel.delete(site);
-        siteList.remove(position);
-        configList();
+        siteViewModel.recuperateAll().observe(this,
+                observer -> {
+                   site = observer.get(position);
+                    siteViewModel.delete(site);
+                    siteList.remove(position);
+                    configList();
+                }
+        );
     }
 }

@@ -1,24 +1,18 @@
 package br.edu.ifsp.dmo.sitesinteressantes.view;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-
 import java.util.List;
-
 import br.edu.ifsp.dmo.sitesinteressantes.R;
 import br.edu.ifsp.dmo.sitesinteressantes.model.Site;
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
-import br.edu.ifsp.dmo.sitesinteressantes.model.dao.SiteDao;
-import br.edu.ifsp.dmo.sitesinteressantes.model.dao.TagSiteDao;
 import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.site.SiteViewModel;
 import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.tag.TagViewModel;
 

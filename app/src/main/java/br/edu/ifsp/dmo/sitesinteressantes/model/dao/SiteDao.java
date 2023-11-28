@@ -78,17 +78,19 @@ public class SiteDao {
         return liveData;
     }
 
-    public void delete(Site site) {
-        String where = DatabaseContracts.TableSite.COLUMN_TITLE + " = ? and " +
-                DatabaseContracts.TableSite.COLUMN_URL + " = ? ";
+    public MutableLiveData<Boolean> delete(Site site) {
+        MutableLiveData<Boolean> liveData = new MutableLiveData<>();
 
-        String whereArgs[] = {site.getTitle(), site.getUrl()};
+        db.collection("sites")
+                .document(site.getId())
+                .delete()
+                .addOnSuccessListener(
+                        x ->  liveData.postValue(true)
+                ).addOnFailureListener(
+                        x ->  liveData.postValue(false)
+                );
 
-        mDatabase = mHelper.getWritableDatabase();
-        mDatabase.delete(DatabaseContracts.TableSite.TABLE_NAME,
-                where,
-                whereArgs);
-        mDatabase.close();
+        return liveData;
     }
 
     public MutableLiveData<Boolean> update(Site siteAtualizado) {

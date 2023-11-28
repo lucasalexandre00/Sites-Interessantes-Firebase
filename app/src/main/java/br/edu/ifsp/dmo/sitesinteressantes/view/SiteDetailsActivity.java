@@ -4,23 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.List;
-
 import br.edu.ifsp.dmo.sitesinteressantes.R;
 import br.edu.ifsp.dmo.sitesinteressantes.model.Site;
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
-import br.edu.ifsp.dmo.sitesinteressantes.model.dao.SiteDao;
-import br.edu.ifsp.dmo.sitesinteressantes.model.dao.TagSiteDao;
 import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.site.SiteViewModel;
 import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.tag.TagViewModel;
 

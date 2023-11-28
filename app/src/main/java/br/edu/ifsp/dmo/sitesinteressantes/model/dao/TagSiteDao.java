@@ -85,32 +85,6 @@ public class TagSiteDao {
         return liveData;
     }
 
-/*    public int recuperateTagId(TagSite tag){
-        int id;
-        String columns[] = {DatabaseContracts.TableTag._ID};
-        String where = DatabaseContracts.TableTag.COLUMN_TAG + " = ? ";
-        String whereArgs[] = {tag.getTag()};
-
-        Cursor cursor;
-
-        mDatabase = mHelper.getReadableDatabase();
-        cursor = mDatabase.query(
-                DatabaseContracts.TableTag.TABLE_NAME,
-                columns,
-                where,
-                whereArgs,
-                null,
-                null,
-                null
-        );
-
-        cursor.moveToNext();
-        id = cursor.getInt(0);
-        cursor.close();
-        mDatabase.close();
-        return id;
-    }*/
-
     public MutableLiveData<Boolean> delete(TagSite tag){
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
 
