@@ -3,6 +3,7 @@ package br.edu.ifsp.dmo.sitesinteressantes.view;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -20,6 +21,8 @@ import br.edu.ifsp.dmo.sitesinteressantes.model.Site;
 import br.edu.ifsp.dmo.sitesinteressantes.model.TagSite;
 import br.edu.ifsp.dmo.sitesinteressantes.model.dao.SiteDao;
 import br.edu.ifsp.dmo.sitesinteressantes.model.dao.TagSiteDao;
+import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.site.SiteViewModel;
+import br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.tag.TagViewModel;
 
 public class SiteDetailsActivity extends AppCompatActivity {
 
@@ -27,20 +30,23 @@ public class SiteDetailsActivity extends AppCompatActivity {
     private EditText urlEditText;
     private Spinner tagSpinner;
     private Button button;
-    private SiteDao siteDao;
+    private SiteViewModel siteViewModel;
+    private TagViewModel tagViewModel;
+    List<TagSite> tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_site_details);
 
-        //siteDao = new SiteDao(this);
-
         tituloEditText = findViewById(R.id.edittext_title);
         urlEditText = findViewById(R.id.edittext_url);
         tagSpinner = findViewById(R.id.spinner_tag);
         button = findViewById(R.id.button_site_save);
         button.setOnClickListener(view -> save() );
+
+        tagViewModel = new ViewModelProvider(this).get(TagViewModel.class);
+        siteViewModel = new ViewModelProvider(this).get(SiteViewModel.class);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -60,8 +66,14 @@ public class SiteDetailsActivity extends AppCompatActivity {
     }
 
     private void populateSpinner(){
-        //List<TagSite> tags = new TagSiteDao().recuperateAll();
-        //tagSpinner.setAdapter(new ArrayAdapter<TagSite>(this, android.R.layout.simple_spinner_dropdown_item, tags));
+        tagViewModel.recuperateAll().observe(
+                this,
+                observer -> {
+                    tags = observer;
+                    tagSpinner.setAdapter(new ArrayAdapter<TagSite>(this, android.R.layout.simple_spinner_dropdown_item, tags));
+
+                }
+        );
     }
 
     private void save(){
@@ -73,7 +85,7 @@ public class SiteDetailsActivity extends AppCompatActivity {
             Toast.makeText(this, "Informe todos os dados.", Toast.LENGTH_SHORT).show();
         }else{
             Site site = new Site(titulo, url, tag);
-            siteDao.create(site);
+            siteViewModel.create(site);
             Toast.makeText(this, "Dados salvos com sucesso.", Toast.LENGTH_SHORT).show();
             finish();
         }

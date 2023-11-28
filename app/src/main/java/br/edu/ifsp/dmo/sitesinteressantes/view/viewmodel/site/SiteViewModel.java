@@ -1,6 +1,7 @@
 package br.edu.ifsp.dmo.sitesinteressantes.view.viewmodel.site;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
@@ -14,5 +15,9 @@ public class SiteViewModel  extends ViewModel {
 
     public LiveData<List<Site>> recuperateAll() {
         return siteDao.recuperateAll();
+    }
+
+    public MutableLiveData<Boolean> create(Site site) {
+        return siteDao.create(site);
     }
 }

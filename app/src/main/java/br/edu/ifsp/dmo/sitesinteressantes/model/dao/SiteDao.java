@@ -28,7 +28,8 @@ public class SiteDao {
 
     public SiteDao(){}
 
-    public MutableLiveData<Boolean> create(Site site){final String id  =  UUID.randomUUID().toString();
+    public MutableLiveData<Boolean> create(Site site){
+        final String id  =  UUID.randomUUID().toString();
         MutableLiveData<Boolean> liveData = new MutableLiveData<>();
         Map<String, Object> tagMap = new HashMap<>();
         tagMap.put("id", id);
