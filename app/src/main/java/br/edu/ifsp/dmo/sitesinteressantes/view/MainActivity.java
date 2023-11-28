@@ -83,11 +83,6 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
     }
 
     private void configList(){
-        if (siteList != null && siteList.size() == 0){
-            SiteAdapter adapter = new SiteAdapter(siteList, this);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        }else {
             siteViewModel.recuperateAll().observe(this,
                     observer -> {
                         siteList = observer;
@@ -96,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
                         recyclerView.setLayoutManager(new LinearLayoutManager(this));
                     }
             );
-        }
     }
 
     @Override
@@ -115,7 +109,13 @@ public class MainActivity extends AppCompatActivity implements SiteClickListener
                 observe -> {
                     if (observe.booleanValue()){
                         siteList.remove(position);
-                        onResume();
+                        if (siteList.size() != 0){
+                           onResume();
+                        }else {
+                            SiteAdapter adapter = new SiteAdapter(siteList, this);
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                        }
                         Toast.makeText(this, "Dados removidos com sucesso.", Toast.LENGTH_SHORT).show();
                     }else {
                         Toast.makeText(this, "Erro ao remover os dados.", Toast.LENGTH_SHORT).show();
